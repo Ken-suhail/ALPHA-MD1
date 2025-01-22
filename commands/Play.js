@@ -1,7 +1,7 @@
 const { keith } = require("../keizzah/keith");
 const axios = require('axios');
 const ytSearch = require('yt-search');
-const { downloadMusic } = require('./scraper'); // Import the scraper code
+const { downloadMusic } = require('../keizzah/scraper'); // Import the scraper code
 
 // Define the command with aliases
 keith({
