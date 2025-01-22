@@ -29,7 +29,7 @@ keith({
 
         const fta = await uploadtoimgur(fdr);
         
-  const genAI = new GoogleGenerativeAI("AIzaSyDLnqpTyVXmBuxO_wWZPeCzJiD5rAsFXc0");
+  const genAI = new GoogleGenerativeAI("AIzaSyDKJa3gs_VDb0r6uGq9Mx7iaQdlqrTtEck");
 
         // Function to convert URL to generative part
         async function urlToGenerativePart(url, mimeType) {
