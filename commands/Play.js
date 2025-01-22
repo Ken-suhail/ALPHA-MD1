@@ -1,3 +1,4 @@
+
 const { keith } = require("../keizzah/keith");
 const axios = require('axios');
 const ytSearch = require('yt-search');
@@ -30,51 +31,28 @@ keith({
     const firstVideo = searchResults.videos[0];
     const videoUrl = firstVideo.url;
 
-    // Attempt to download from different APIs
-    let downloadData;
-    let downloadUrl;
-    let videoDetails;
+    // Attempt to download using the specified API
+    const downloadUrl = `https://api-rin-tohsaka.vercel.app/download/ytmp4?url=${encodeURIComponent(videoUrl)}`;
 
-    // Function to get download data
-    const getDownloadData = async (url) => {
-      try {
-        const response = await axios.get(url);
-        return response.data;
-      } catch (error) {
-        console.error('Error fetching data from API:', error);
-        return { success: false };
-      }
-    };
+    // Fetch the download data
+    const response = await axios.get(downloadUrl);
 
-    // Try Gifted API
-    downloadData = await getDownloadData(`https://api.giftedtech.web.id/api/download/dlmp3?url=${encodeURIComponent(videoUrl)}&apikey=gifted-md`);
-    if (downloadData.success) {
-      downloadUrl = downloadData.result.download_url;
-      videoDetails = downloadData.result;
-    } else {
-      // Try Yasiya API if Gifted fails
-      downloadData = await getDownloadData(`https://www.dark-yasiya-api.site/download/ytmp3?url=${encodeURIComponent(videoUrl)}`);
-      if (downloadData.success) {
-        downloadUrl = downloadData.result.download_url;
-        videoDetails = downloadData.result;
-      } else {
-        // Try Dreaded API if both fail
-        downloadData = await getDownloadData(`https://api.dreaded.site/api/ytdl/video?query=${encodeURIComponent(videoUrl)}`);
-        if (downloadData.success) {
-          downloadUrl = downloadData.result.download_url;
-          videoDetails = downloadData.result;
-        }
-      }
+    // Check if the response is successful
+    if (!response.data || !response.data.result) {
+      return repondre('Failed to retrieve download URL. Please try again later.');
     }
 
+    const videoDetails = response.data.result;
+    const downloadAudioUrl = videoDetails.download_url;
+
     // Check if a valid download URL was found
-    if (!downloadUrl || !videoDetails) {
-      return repondre('Failed to retrieve download URL from all sources. Please try again later.');
+    if (!downloadAudioUrl) {
+      return repondre('Failed to retrieve download URL. Please try again later.');
     }
 
     // Prepare the message payload with external ad details
     const messagePayload = {
-      audio: { url: downloadUrl },
+      audio: { url: downloadAudioUrl },
       mimetype: 'audio/mp4',
       contextInfo: {
         externalAdReply: {
