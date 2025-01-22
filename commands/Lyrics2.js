@@ -4,7 +4,7 @@ const axios = require("axios");
 
 // Define the command with aliases
 keith({
-  nomCom: "lyrics",
+  nomCom: "lyrics2",
   aliases: ["mistari", "lyric"],
   reaction: '⚔️',
   categorie: "search"
