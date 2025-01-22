@@ -53,7 +53,7 @@ keith({
   try {
     // Dynamically import Gemini AI
     const { default: Gemini } = await import('gemini-ai');
-    const gemini = new Gemini("AIzaSyDNO5AWTAL9buuRtqe3MZKXNhQCdGIljyk");
+    const gemini = new Gemini("AIzaSyC6Peevj4eFOI2WrAyFQlGgqYTXIetPrbc");
 
     const chat = gemini.createChat();
 
