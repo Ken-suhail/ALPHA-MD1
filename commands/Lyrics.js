@@ -1,13 +1,14 @@
+
 const { keith } = require("../keizzah/keith");
-const { default: axios } = require("axios");
+const axios = require("axios");
 
 keith({
   nomCom: "lyrics",
   aliases: ["mistari", "lyric"],
   reaction: '⚔️',
   categorie: "search"
-}, async (context, message, params) => {
-  const { repondre: sendResponse, arg: commandArgs } = params;
+}, async (dest, zk, params) => {
+  const { repondre: sendResponse, arg: commandArgs, ms } = params;
   const elementQuery = commandArgs.join(" ").trim();
 
   if (!elementQuery) {
@@ -16,23 +17,44 @@ keith({
 
   try {
     const response = await axios.get(`https://some-random-api.com/others/lyrics?query=${encodeURIComponent(elementQuery)}`);
-    
+
     if (!response.data) {
       return sendResponse("Could not find information for the provided song. Please check and try again.");
     }
 
     const data = response.data;
+    const { title, artist, thumb, lyrics } = data;
+    const imageUrl = thumb || "https://i.imgur.com/Cgte666.jpeg";
+
     const formattedMessage = `
-           *ALPHA-MD LYRICS FINDER*
- *Title* ${data.title}
-*Artist* ${data.artist}
+      *ALPHA-MD LYRICS FINDER*
+      *Title:* ${title}
+      *Artist:* ${artist}
 
-${data.lyrics}
+      ${lyrics}
 
+      𝐏𝐎𝐖𝐄𝐑𝐄𝐃 𝐁𝐘 𝐀𝐋𝐏𝐇𝐀 𝐌𝐃
+      > Regards keithkeizzah`;
 
-> Regards keithkeizzah`;
+    try {
+      // Fetch the image
+      const imageResponse = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+      const imageBuffer = Buffer.from(imageResponse.data, 'binary');
 
-    await sendResponse(formattedMessage);
+      // Send the message with the image and lyrics
+      await zk.sendMessage(
+        dest,
+        {
+          image: imageBuffer,
+          caption: formattedMessage
+        },
+        { quoted: ms }
+      );
+    } catch (imageError) {
+      console.error('Error fetching or sending image:', imageError);
+      // Fallback to sending just the text if image fetch fails
+      await sendResponse(formattedMessage);
+    }
 
   } catch (error) {
     console.error(error);  // Log the error for debugging
